@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebGIS Aceh – ardelia_aceh</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>#map{height:90vh;}body{font-family:sans-serif;} .logo{height:50px;}</style>
+</head>
+<body>
+  <h1><img src="logo_aceh.png" class="logo"> WebGIS Provinsi Aceh</h1>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([4.5,96.5],7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(map);
+    const layers = {};
+    const addLayer = (file, name, style) => {
+      layers[name] = L.geoJSON(null, {style: style}).addTo(map);
+      fetch('data/'+file).then(r=>r.json()).then(d=>layers[name].addData(d));
+    };
+    addLayer('roads.geojson','Jalan',{color:'gray'});
+    addLayer('sungai.geojson','Sungai',{color:'blue'});
+    addLayer('fasilitas_pemerintah.geojson','Fasilitas Pemerintah',{color:'green'});
+    addLayer('rumah_sakit.geojson','Rumah Sakit',{color:'red'});
+    L.control.layers(null,layers,{collapsed:false}).addTo(map);
+  </script>
+</body>
+</html>
